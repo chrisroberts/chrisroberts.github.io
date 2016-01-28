@@ -1,0 +1,59 @@
+---
+title:  "Krakow: NSQ for Ruby"
+date:   2014-03-08 07:46:43
+tags: [nsq,ruby,library]
+---
+
+[Krakow][] is a [Ruby][] client library for [NSQ][]. The current `0.2.0` release pulls it out of its
+initial "alpha" phase, providing a feature complete client library. The road to finalizing a stable `1.0`
+release will consist of tight release iterations to fill out the tests, stablize the core,
+and add in some extra features like non-standard distributions and custom contexts for SSL.
+
+Some cool things about this library include [Celluloid][] backed `Consumers` and `Producers`,
+[Celluloid::IO][celluloid-io] backed connections, with auto reconnection on connection failures.
+Full connection feature support which includes Snappy and Deflate compression as well as TLS.
+
+All this talk. Who cares about talk, lets see how to use it! OK!
+
+Lets start with a producer:
+
+```ruby
+producer = Krakow::Producer.new(
+  :host => 'HOST',
+  :port => 'PORT',
+  :topic => 'target'
+)
+producer.write('KRAKOW!', 'KRAKOW!')
+```
+
+Awesome! Now lets consume those messages:
+
+```ruby
+consumer = Krakow::Consumer.new(
+  :nsqlookupd => 'http://HOST:PORT',
+  :topic => 'target',
+  :channel => 'ship'
+)
+
+consumer.queue.size
+# => 2
+
+2.times do
+  msg = consumer.queue.pop
+  puts "Received: #{msg}"
+  consumer.confirm(msg.message_id)
+end
+
+# => "Received: KRAKOW"
+# => "Received: KRAKOW"
+```
+
+Pretty great!
+
+* <https://github.com/chrisroberts/krakow>
+
+[krakow]: https://github.com/chrisroberts/krakow "ruby nsq client library"
+[nsq]: https://bitly.github.io/nsq "realtime distributed messaging platform"
+[celluloid]: https://celluloid.io "actor-based concurrent object framework for ruby"
+[celluloid-io]: https://github.com/celluloid/celluloid-io "evented sockets for celluloid actors"
+[ruby]: https://ruby-lang.org "ruby programming language"
