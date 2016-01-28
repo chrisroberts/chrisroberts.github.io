@@ -79,3 +79,4 @@ theme: very-simple
 deploy:
   type: git
   repo: git@github.com:chrisroberts/chrisroberts.github.io
+  branch: gh-pages
