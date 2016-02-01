@@ -84,7 +84,7 @@ provider. So, lets tackle the problems:
 ARM intrinsic functions can be chained. For example, to get the region of the current resource
 group we would write:
 
-```
+```json
 "[resource_group().location]"
 ```
 
@@ -104,7 +104,7 @@ The new type provides the custom dumping functionality returning a `String` type
 not out of the woods yet. Right now, we get an underlying data structure that looks like:
 
 ```ruby
-{"resource_group" => {"region" => nil}}
+{"resource_group" => {"location" => nil}}
 ```
 
 and with that we can chain our keys together to get the desired string:
