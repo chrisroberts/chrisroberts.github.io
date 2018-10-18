@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="Building the world I want to live in">
+  <meta name="keyword" content="spox, programming">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  
+  <title>
+    
+      Building crazy with AttributeStruct | spox codes
+    
+  </title>
+  <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/plugins/gitment.css">
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="/js/qrious.js"></script>
+<script src="/js/gitment.js"></script>
+  
+
+</head>
+
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>spox codes</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>Building crazy with AttributeStruct</h2>
+  <p class="post-date">2016-01-27</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><p>Building support for Azure into SparkleFormation required the
+ability to programatically generate complex nested strings. Lets
+have a quick look at the crazy needed, and solution discovered.</p>
+<h2 id="Source-of-the-crazy-or-why-JSON-should-be-data"><a href="#Source-of-the-crazy-or-why-JSON-should-be-data" class="headerlink" title="Source of the crazy (or why JSON should be data)"></a>Source of the crazy (or why JSON should be data)</h2><p>AttributeStruct is a pretty fun library. It works great for programmatic generation of complex
+data structures and is continually put to the test supporting the SparkleFormation library. One
+of the recent additions to the SparkleFormation library was provider specific support for Azure
+Resource Manager (ARM) deployment templates. The templates are much the same as you would expect
+coming from other Orchestration API templates. Parameters block, outputs block, and of course the
+resources. Resources were slightly different, being a different underlying type than other templates
+(Array vs. Hash). Things were looking pretty great implementation wise until it came time to tackle
+intrinsic functions.</p>
+<p>If you’re not sure what exactly an intrinsic function is, that’s okay. It’s a pretty simple concept.
+They are functions the template can request during “runtime” when the orchestration API is processing
+the template. For example, if you wanted to join a number of strings in a CloudFormation template you
+would provide the following data structure:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">"my_value": &#123;</span><br><span class="line">  "Fn::Join": [</span><br><span class="line">    ", ",</span><br><span class="line">    [</span><br><span class="line">      <span class="string">"one"</span>,</span><br><span class="line">      <span class="string">"two"</span>,</span><br><span class="line">      <span class="string">"three"</span></span><br><span class="line">    ]</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>When CloudFormation processes the template, it will process the <code>Fn::Join</code> and pass the values to
+a join function and set the resulting value (<code>&quot;one, two, three&quot;</code>). HEAT templates use the same
+kind of approach, just with different function names. This approach is great because it makes
+processing the data, as well as generating the data, very straight forward. Now, we can compare
+the same example written for ARM:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"my_value": "[concat('one', ',', 'two', ',', 'three')]"</span><br></pre></td></tr></table></figure>
+<p>With ARM, instead of a proper data structure defining the desired function to be run with the
+list of arguments to be provided, it is all defined within a single string identified by the
+starting <code>[</code> character and trailing <code>]</code> character. At a glance, this looks great. So much
+easier to write than all that JSON data structure stuff for the AWS template.</p>
+<h2 id="Your-happiness-is-wrong"><a href="#Your-happiness-is-wrong" class="headerlink" title="Your happiness is wrong"></a>Your happiness is wrong</h2><p>If looking at that string defining a function to be evaluated at runtime makes you happy because
+it’s less complex data structures to construct within your JSON, you need to stop. You should
+not be writing JSON. Computers write JSON. It is a <em>serialization</em> format. Not a <em>user</em> format.</p>
+<p>It gets worse coming from a generation point of view. In SparkleFormation, helper methods are
+provided within the DSL for building the required data structures used within templates. Continuing
+with the examples above, the template snippet for a CloudFormation template would look like:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">my_value join!(<span class="string">'one'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>, <span class="symbol">:options</span> =&gt; &#123;<span class="symbol">:delimiter</span> =&gt; <span class="string">', '</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>When that is compiled, we get the same result as the raw CloudFormation JSON above. It’s very straightforward
+because we are simply building the underlying data structures. When we look at the ARM example,
+things get murky. Extremely murky.</p>
+<h2 id="Breaking-down-the-problem"><a href="#Breaking-down-the-problem" class="headerlink" title="Breaking down the problem"></a>Breaking down the problem</h2><p>The implementation of intrinsic functions within ARM create multiple problems within SparkleFormation.
+One option is to just be lazy, and let authors write their code strings and not provide helpers. Yet this
+approach is orthgonal to the fundamental principle of the SparkleFormation library: DRY and concise
+templates. SparkleFormation is <em>supposed</em> to remove the grind from building templates, and not providing
+helpers for generating intrinsic functions would be considered a failure in the implementation for the
+provider. So, lets tackle the problems:</p>
+<h3 id="Function-chaining"><a href="#Function-chaining" class="headerlink" title="Function chaining"></a>Function chaining</h3><p>ARM intrinsic functions can be chained. For example, to get the region of the current resource
+group we would write:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"[resource_group().location]"</span></span><br></pre></td></tr></table></figure>
+<p>To write this within SparkleFormation, I expect it to look like:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resource_group!.location</span><br></pre></td></tr></table></figure>
+<p>Using AttributeStruct instances gets us part of the way there. We can use them to build an underlying
+Hash data structure allowing only a single key which provides the requested method name. We can chain
+method calls easily and when processing simply print the key value of the current data structure, and the
+key of it’s child data structure, and so on until the leaf has been reached. Easy! This is customized
+behavior, so a new class must be introduced: <code>SparkleFormation::FunctionStruct</code>.</p>
+<p>The new type provides the custom dumping functionality returning a <code>String</code> type. Seems great, but we’re
+not out of the woods yet. Right now, we get an underlying data structure that looks like:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"resource_group"</span> =&gt; &#123;<span class="string">"location"</span> =&gt; <span class="literal">nil</span>&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>and with that we can chain our keys together to get the desired string:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"resource_group().location"</span></span><br></pre></td></tr></table></figure>
+<p>But we’re still missing part of the requirement: Start and end characters flagging this as an intrinsic
+function. AttributeStruct provides hierarchy information, which ends up being perfect for this situation.
+Since the root <code>SparkleFormation::FunctionStruct</code> is the only instance in the chain that needs to customize
+it’s dump behavior (adding start and end characters for flagging), adding a quick check to the dump for
+root status allows wrapping the final string with <code>[</code> and <code>]</code> to get the desired result:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"[resource_group().location]"</span></span><br></pre></td></tr></table></figure>
+<h3 id="Function-parameters"><a href="#Function-parameters" class="headerlink" title="Function parameters"></a>Function parameters</h3><p>The method chaining problem is solved but a new wrinkle gets added: parameters. Many of the available
+intrinsic functions accept or require parameters. Compounding this problem is that some of these
+parameters may be other intrinsic functions. Lets look at a simple example:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"[concat('region: ', resource_group().location)]"</span></span><br></pre></td></tr></table></figure>
+<p>If we look at what would be expected in a SparkleFormation template it is immediately obvious how things
+will break in this use case:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">concat!(<span class="string">'region: '</span>, resource_group!.location)</span><br></pre></td></tr></table></figure>
+<p>With the implementation thus far, an error would be encountered because the <code>SparkleFormation::FunctionStruct</code>
+does not properly allow parameters. Customizing the initializer and <code>method_missing</code> method allows storage
+of parameters provided to function calls which solves this problem easily enough. The <code>SparkleFormation::FunctionStruct</code>
+holds those parameter values internally, and properly formats and dumps them when requested. Now when we
+dump the structure, we get:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"[concat!('region: ', [resource_group().location])]"</span></span><br></pre></td></tr></table></figure>
+<p>It’s close, but not really what we’re after. In fact, it’s not at all what we are after because this will just
+produce an error. So how can we prevent parameter values from assuming they are root and wrapping themselves? Since
+the <code>SparkleFormation::FunctionStruct</code> receives the parameter collection and stores it until a dump is requested, lets
+just do a quick pre-process on the list. If any <code>SparkleFormation::FunctionStruct</code> instances are detected, we can set
+the parent link to the current <code>SparkleFormation::FunctionStruct</code>. This does two things:</p>
+<ol>
+<li>Provides expected hierarchy context to the struct</li>
+<li>Prevents automatic wrapping on dump</li>
+</ol>
+<p>And the result:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"[concat('region: ', resource_group().location)]"</span></span><br></pre></td></tr></table></figure>
+<p>Perfect! Properly generated intrinsic function String type from programmatic generation with SparkleFormation.</p>
+<h3 id="Stupid-return-types"><a href="#Stupid-return-types" class="headerlink" title="Stupid return types"></a>Stupid return types</h3><p>Excited to have working intrinsic function generation, I slapped together a template just to try things out in
+action. The template itself was extremely simple:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:dummy</span>, <span class="symbol">:provider</span> =&gt; <span class="symbol">:azure</span>) <span class="keyword">do</span></span><br><span class="line">  value add!(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>which provided the result:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"value"</span>: <span class="string">"[add(1, 2)]"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Okay, lets get a little more complex and nest some functions:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:dummy</span>, <span class="symbol">:provider</span> =&gt; <span class="symbol">:azure</span>) <span class="keyword">do</span></span><br><span class="line">  value add!(<span class="number">1</span>, add!(<span class="number">3</span>, <span class="number">4</span>))</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>which provided the result:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"value"</span>: <span class="string">"[add(1, add(3, 4))]"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This is all looking really great. Within the intrinsic functions documentation page there are a few
+pretty complex examples. Lets take one of those and give it a test. Using this example:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"[reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob]"</span></span><br></pre></td></tr></table></figure>
+<p>lets convert this into SparkleFormation:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:dummy</span>, <span class="symbol">:provider</span> =&gt; <span class="symbol">:azure</span>) <span class="keyword">do</span></span><br><span class="line">  value reference!(concat!(<span class="string">'Microsoft.Storage/storageAccounts/'</span>, parameters!(<span class="string">'storageAccountName'</span>)), providers!(<span class="string">'Microsoft.Storage'</span>, <span class="string">'storageAccounts'</span>).apiVersions[<span class="number">0</span>]).primaryEndpoints.blob</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>Right away I know this is going to fail. The <code>SparkleFormation::FunctionStruct</code> has no support for Array or Hash accessors via <code>[]</code>. Adding in some functionality to handle the accessors and
+we’re on our way. I run the SparkleFormation version of the example and all the excitement around solving this crazy is lost:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"value"</span>: <span class="string">"[blob]"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>At this point I assumed I must have broken something. My previous addition test worked brilliantly but now I seem to be losing the entire chain. I double back to the original example
+and running it provides the expected result. Dumbfounded, I started reducing my complex example until I reached a point that the generated output matched expections. I reached that point
+when the template looked like this:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:dummy</span>, <span class="symbol">:provider</span> =&gt; <span class="symbol">:azure</span>) <span class="keyword">do</span></span><br><span class="line">  value reference!(concat!(<span class="string">'Microsoft.Storage/storageAccounts/'</span>, parameters!(<span class="string">'storageAccountName'</span>)), providers!(<span class="string">'Microsoft.Storage'</span>, <span class="string">'storageAccounts'</span>))</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>It was during this reduction that the obvious answer finally hit me. Once I had removed the end method chaining from the <code>reference!</code> call, the <code>reference</code> function turned up in the
+output, but with one oddity. The second parameter was just <code>apiVersions</code>. The underlying problem is the actual return value from <em>the entire</em> right side expression. Duh! What we
+need is <code>value</code> to be set to the root <code>SparkleFormation::FunctionStruct</code> defined within the right hand expression, not the final result which is the <em>last</em> <code>SparkleFormation::FunctionStruct</code>.
+All we need is to change Ruby’s evaluation behavior and return back the value we want. No problem!</p>
+<h4 id="The-dumb-solution"><a href="#The-dumb-solution" class="headerlink" title="The dumb solution"></a>The dumb solution</h4><p>The dumb solution is no solution, because it’s dumb and the solution doesn’t exist. But my first idea was: “lets modify what Ruby returns from evaluation of the right side of the expression”
+which led to lots of searching, reading, testing, more searching, more reading, more testing, and on and on until I just gave up. This was looking to be a serious problem that might not
+be “easily” solvable without some seriously bad idea hack. Defeated, I moved on to some other tasks and left things for a bit.</p>
+<h4 id="The-less-dumb-solution"><a href="#The-less-dumb-solution" class="headerlink" title="The less dumb solution"></a>The less dumb solution</h4><p>Not thinking about a problem seems to be a great way to find solutions to problems. Doing other mundane things and an idea popped into my head. AttributeStruct is already doing
+behavior modification via <code>method_missing</code> to provide the data generation DSL behavior. When a value is being set into the underlying data structure of the instance, a quick
+check on the type would allow modifying the result if required. Basically, if the value being set is a <code>SparkleFormation::FunctionStruct</code>, we can request the root of that structure
+and set that, rather than the leaf value that is the actual result. After some modifications to the SparkleFormation::SparkleStruct to perform detections on set, I kick off
+the original complex example:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:dummy</span>, <span class="symbol">:provider</span> =&gt; <span class="symbol">:azure</span>) <span class="keyword">do</span></span><br><span class="line">  value reference!(concat!(<span class="string">'Microsoft.Storage/storageAccounts/'</span>, parameters!(<span class="string">'storageAccountName'</span>)), providers!(<span class="string">'Microsoft.Storage'</span>, <span class="string">'storageAccounts'</span>).apiVersions[<span class="number">0</span>]).primaryEndpoints.blob</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>and the expected result is generated:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"value"</span>: <span class="string">"[reference(concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob]"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="A-recap"><a href="#A-recap" class="headerlink" title="A recap"></a>A recap</h3><ol>
+<li>JSON should be data structures, not code strings</li>
+<li>We have code strings, so lets figure something out</li>
+<li>AttributeStruct can be adapted to programmatically generate code strings</li>
+<li><code>SparkleFormation::FunctionStruct</code> is really pretty great.</li>
+</ol>
+<p>And the end result: Ability to properly support ARM templates within SparkleFormation.</p>
+<ul>
+<li><a href="http://www.sparkleformation.io" target="_blank" rel="noopener">http://www.sparkleformation.io</a></li>
+<li><a href="https://github.com/chrisroberts/attribute_struct" target="_blank" rel="noopener">https://github.com/chrisroberts/attribute_struct</a></li>
+<li><a href="https://github.com/sparkleformation/sparkle_formation" target="_blank" rel="noopener">https://github.com/sparkleformation/sparkle_formation</a></li>
+</ul>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#ruby" >
+    <span class="tag-code">ruby</span>
+  </a>
+
+  <a href="/tags#attribute_struct" >
+    <span class="tag-code">attribute_struct</span>
+  </a>
+
+  <a href="/tags#sparkle_formation" >
+    <span class="tag-code">sparkle_formation</span>
+  </a>
+
+  <a href="/tags#azure" >
+    <span class="tag-code">azure</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2015/08/12/2015-08-12-rainbow-serialization/">
+        <span class="nav-arrow">← </span>
+        
+          Serialized Rainbows
+        
+      </a>
+    
+    
+  </div>
+
+    <!-- NAV END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Source-of-the-crazy-or-why-JSON-should-be-data"><span class="toc-nav-text">Source of the crazy (or why JSON should be data)</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Your-happiness-is-wrong"><span class="toc-nav-text">Your happiness is wrong</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Breaking-down-the-problem"><span class="toc-nav-text">Breaking down the problem</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Function-chaining"><span class="toc-nav-text">Function chaining</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Function-parameters"><span class="toc-nav-text">Function parameters</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Stupid-return-types"><span class="toc-nav-text">Stupid return types</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#The-dumb-solution"><span class="toc-nav-text">The dumb solution</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#The-less-dumb-solution"><span class="toc-nav-text">The less dumb solution</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#A-recap"><span class="toc-nav-text">A recap</span></a></li></ol></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'http://spox.github.io/2016/01/27/2016-01-27-hacking-with-attributestruct/';
+    var banner = 'undefined'
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+     // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', '/imgs/404.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== '/imgs/404.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+
+    // qrcode
+    var qr = new QRious({
+      element: document.getElementById('share-qrcode'),
+      value: document.location.href
+    });
+
+    // gitment
+    var gitmentConfig = "chrisroberts";
+    if (gitmentConfig !== 'undefined') {
+      var gitment = new Gitment({
+        id: "Building crazy with AttributeStruct",
+        owner: "chrisroberts",
+        repo: "chrisroberts.github.io",
+        oauth: {
+          client_id: "null",
+          client_secret: "null"
+        },
+        theme: {
+          render(state, instance) {
+            const container = document.createElement('div')
+            container.lang = "en-US"
+            container.className = 'gitment-container gitment-root-container'
+            container.appendChild(instance.renderHeader(state, instance))
+            container.appendChild(instance.renderEditor(state, instance))
+            container.appendChild(instance.renderComments(state, instance))
+            container.appendChild(instance.renderFooter(state, instance))
+            return container;
+          }
+        }
+      })
+      gitment.render(document.getElementById('comments'))
+    }
+  })();
+</script>
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    &copy; 2018
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'true';
+  async("//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<script src="/js/script.js"></script>
+
+  </body>
+</html>

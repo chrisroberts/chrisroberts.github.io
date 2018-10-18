@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="Building the world I want to live in">
+  <meta name="keyword" content="spox, programming">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  
+  <title>
+    
+      Flocking Chefs | spox codes
+    
+  </title>
+  <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/plugins/gitment.css">
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="/js/qrious.js"></script>
+<script src="/js/gitment.js"></script>
+  
+
+</head>
+
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>spox codes</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>Flocking Chefs</h2>
+  <p class="post-date">2012-12-09</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><p>Internode communication via flocks of chefs.</p>
+<h2 id="Flock-of-Chefs"><a href="#Flock-of-Chefs" class="headerlink" title="Flock of Chefs"></a>Flock of Chefs</h2><p>When building and configuring nodes (assuming with Chef) one issue
+that will commonly come up is the requirements of remote states for
+nodes to properly converge. There have been many different approaches
+to solving this issue. Searching for node attributes signalling a
+desired state has been reached is one of the most common approaches. This
+approach, however, can be slow and requires custom logic built into
+recipes around success and failure states of the search.</p>
+<p>Instead of searching for nodes that have reached a specific state via
+node attributes on the Chef server, what if nodes could talk to each
+other? This would allow nodes to not only query directly for state
+on a remote node but would also allow for nodes to notify remote nodes
+when a desired state has been reached. Flock of Chefs aims to provide
+this functionality plus a few extras. Lets take a closer look.</p>
+<h3 id="Tooling"><a href="#Tooling" class="headerlink" title="Tooling"></a>Tooling</h3><p>The tooling used to back flock building:</p>
+<ul>
+<li>DCell: <a href="https://github.com/celluloid/dcell" target="_blank" rel="noopener">https://github.com/celluloid/dcell</a></li>
+<li>Zookeeper: <a href="http://zookeeper.apache.org/" target="_blank" rel="noopener">http://zookeeper.apache.org/</a></li>
+</ul>
+<h3 id="Requirements-for-node-setup"><a href="#Requirements-for-node-setup" class="headerlink" title="Requirements for node setup"></a>Requirements for node setup</h3><p>The flock_of_chefs cookbook uses the zookeeperd cookbook for auto
+zk node discovery. The configuration and setup of zookeeper nodes
+and clusters can range wildly, so the flock_of_chefs cookbook will
+not set any up or attempt configuration. For testing though, just
+adding the zookeeperd cookbook into the run list of the test nodes
+will allow a cluster to setup for the flock to use.</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># role/flocked.rb</span></span><br><span class="line">name <span class="string">'flocked'</span></span><br><span class="line">run_list(<span class="string">%w(</span></span><br><span class="line"><span class="string">  recipe[zookeeperd::server]</span></span><br><span class="line"><span class="string">  recipe[flock_of_chefs]</span></span><br><span class="line"><span class="string">)</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="New-features"><a href="#New-features" class="headerlink" title="New features"></a>New features</h3><p>The Flock of Chefs library will provide two new primatives to Chef. First,
+lets look at how to use the primatives within a recipe, and then look at
+what these new primatives are doing to Chef under the hood.</p>
+<ul>
+<li>remote_notifies</li>
+</ul>
+<p>This is used to send notifications to remote nodes. It works much the same
+as the regular <code>notifies</code> within Chef, with the extra ability to send the
+notifications to other Chef nodes. In practice, a recipe would look like
+this:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">resource <span class="string">'/tmp/notify_test'</span> <span class="keyword">do</span></span><br><span class="line">  content <span class="string">'test content'</span></span><br><span class="line">  remote_notifies <span class="symbol">:create</span>, <span class="string">'file[remote_notify_test]'</span>, <span class="symbol">:node</span> =&gt; <span class="string">'remote.1'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>remote_subscribes</li>
+</ul>
+<p>This is the inverse of <code>remote_notifies</code> and works much the same as the
+regular <code>subscribes</code> within Chef. It will search for the nodes provided
+and register a notify with them, so resources can subscribe to changes
+occurring on resources within other nodes. In practice, a recipe would
+look like this:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">resource <span class="string">'/tmp/subscribe_test'</span> <span class="keyword">do</span></span><br><span class="line">  content <span class="string">'test content'</span></span><br><span class="line">  remote_subscribes <span class="symbol">:create</span>, <span class="string">'file[/tmp/notify_test]'</span>, <span class="symbol">:node</span> =&gt; <span class="string">'remote.2'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>For simplitity sake we are using explicit node names for our subscriptions
+and notifications. Support is available for using search to determine applicable
+nodes, but we can get to that later.</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#chef" >
+    <span class="tag-code">chef</span>
+  </a>
+
+  <a href="/tags#communcation" >
+    <span class="tag-code">communcation</span>
+  </a>
+
+  <a href="/tags#internode" >
+    <span class="tag-code">internode</span>
+  </a>
+
+  <a href="/tags#flock_of_chefs" >
+    <span class="tag-code">flock_of_chefs</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2012/06/23/2012-06-23-chef-gems-and-embedded-ruby/">
+        <span class="nav-arrow">← </span>
+        
+          Chef gems and embedded ruby
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2014/03/08/2014-03-08-krakow/">
+        
+          Krakow: NSQ for Ruby
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Flock-of-Chefs"><span class="toc-nav-text">Flock of Chefs</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Tooling"><span class="toc-nav-text">Tooling</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Requirements-for-node-setup"><span class="toc-nav-text">Requirements for node setup</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#New-features"><span class="toc-nav-text">New features</span></a></li></ol></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'http://spox.github.io/2012/12/09/2012-12-09-flocking-chefs/';
+    var banner = 'undefined'
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+     // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', '/imgs/404.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== '/imgs/404.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+
+    // qrcode
+    var qr = new QRious({
+      element: document.getElementById('share-qrcode'),
+      value: document.location.href
+    });
+
+    // gitment
+    var gitmentConfig = "chrisroberts";
+    if (gitmentConfig !== 'undefined') {
+      var gitment = new Gitment({
+        id: "Flocking Chefs",
+        owner: "chrisroberts",
+        repo: "chrisroberts.github.io",
+        oauth: {
+          client_id: "null",
+          client_secret: "null"
+        },
+        theme: {
+          render(state, instance) {
+            const container = document.createElement('div')
+            container.lang = "en-US"
+            container.className = 'gitment-container gitment-root-container'
+            container.appendChild(instance.renderHeader(state, instance))
+            container.appendChild(instance.renderEditor(state, instance))
+            container.appendChild(instance.renderComments(state, instance))
+            container.appendChild(instance.renderFooter(state, instance))
+            return container;
+          }
+        }
+      })
+      gitment.render(document.getElementById('comments'))
+    }
+  })();
+</script>
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    &copy; 2018
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'true';
+  async("//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<script src="/js/script.js"></script>
+
+  </body>
+</html>

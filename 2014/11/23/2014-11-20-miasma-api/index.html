@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="Building the world I want to live in">
+  <meta name="keyword" content="spox, programming">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  
+  <title>
+    
+      Miasma - Cloud Models | spox codes
+    
+  </title>
+  <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/plugins/gitment.css">
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="/js/qrious.js"></script>
+<script src="/js/gitment.js"></script>
+  
+
+</head>
+
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>spox codes</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>Miasma - Cloud Models</h2>
+  <p class="post-date">2014-11-23</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><p>New Ruby cloud API library with a specific purpose.</p>
+<h2 id="Cloud-Infrastructure-API"><a href="#Cloud-Infrastructure-API" class="headerlink" title="Cloud Infrastructure API"></a>Cloud Infrastructure API</h2><p>I’ve been using <a href="http://fog.io" title="The Ruby cloud services library" target="_blank" rel="noopener">fog</a> for a long time, and have
+added a few different features to the library including:</p>
+<ul>
+<li><a href="https://github.com/fog/fog/pull/1761" target="_blank" rel="noopener">Rackspace networks</a></li>
+<li><a href="https://github.com/fog/fog/pull/2322" target="_blank" rel="noopener">S3 bucket tagging</a></li>
+<li><a href="https://github.com/fog/fog/pull/2739" target="_blank" rel="noopener">DNSimple API token auth</a></li>
+</ul>
+<p>One of the great things about <a href="http://fog.io" title="The Ruby cloud services library" target="_blank" rel="noopener">fog</a> is that it support <em>everything</em>
+cloud which means it’s super handy for interacting with various
+APIs. Especially where certain cloud features may be available
+via the API but not an existing UI, it’s very simple to jump
+into an IRB session and start running.</p>
+<p>Cloud API coverage is a very important feature within the
+<a href="http://fog.io" title="The Ruby cloud services library" target="_blank" rel="noopener">fog</a> library. Yet, some times coverage of all features available
+within a specific API is not important. At times the power that
+comes from consistency can be greater than that of coverage.</p>
+<h2 id="Cloud-Models"><a href="#Cloud-Models" class="headerlink" title="Cloud Models"></a>Cloud Models</h2><p><a href="http://fog.io" title="The Ruby cloud services library" target="_blank" rel="noopener">Fog</a> includes the concept of infrastructure resource models. The
+concept is pretty simple. Define a model for a given resource,
+then wire in the provider. I’ve used the <code>File</code> and <code>Server</code>
+models with relative success, and the concept is sound. Having
+built out the <a href="https://github.com/hw-labs/knife-cloudformation" title="Knife plugin for cloud formation" target="_blank" rel="noopener">knife-cloudformation</a>
+plugin targeted at AWS, common models really make sense to
+prevent lots of provider specific code branches.</p>
+<h3 id="Orchestration-model"><a href="#Orchestration-model" class="headerlink" title="Orchestration model"></a>Orchestration model</h3><p>With the addition of the <a href="https://wiki.openstack.org/wiki/Heat" title="OpenStack Orchestration" target="_blank" rel="noopener">Heat</a> service within <a href="http://www.openstack.org" title="Open Source Cloud Computing Software" target="_blank" rel="noopener">OpenStack</a>
+the need for generic models was highlighted. If a generic model
+had been used for <a href="https://github.com/hw-labs/knife-cloudformation" title="Knife plugin for cloud formation" target="_blank" rel="noopener">knife-cloudformation</a>, the addition of <a href="https://wiki.openstack.org/wiki/Heat" title="OpenStack Orchestration" target="_blank" rel="noopener">Heat</a>
+support would have been as simple as the provider compatible implementation.
+<a href="http://fog.io" title="The Ruby cloud services library" target="_blank" rel="noopener">Fog</a> had an <code>Orchestration</code> model some what defined, but it was
+only within <code>OpenStack</code>.</p>
+<p>So I built out the abstract model and worked AWS CFN and RS orchestration
+support into them:</p>
+<ul>
+<li><a href="https://github.com/fog/fog-core/pull/45" target="_blank" rel="noopener">Add abstract orchestration modeling</a></li>
+<li><a href="https://github.com/fog/fog/pull/2971" target="_blank" rel="noopener">Implement orchestration models</a></li>
+</ul>
+<p>Once these models were in place, <a href="https://github.com/hw-labs/knife-cloudformation" title="Knife plugin for cloud formation" target="_blank" rel="noopener">knife-cloudformation</a> was updated to
+use the generic models, and multi-provider orchestration support was achieved.
+It cost some features previously available within the knife plugin, but
+they were mainly informational features that could be focused on later. The
+important milestone was actually using the same code base for interacting
+with multiple providers.</p>
+<p>Now we have working multi-provider knife orchestration plugin, but it’s not
+really usable. It’s <em>usable</em>, but not easily. It requires a custom Gemfile
+with multiple custom github references. Internally, and on a small scale,
+that’s kinda managable. Yet, on any larger scale that’s a non-starter. The
+changesets within the pull requests are large, and uses a slightly different
+modeling approach than in the past (making use of <code>fog-core</code> for generic
+model definition). And there’s the matter of a lack of tests, mainly due
+to discussions of migrating test suites but no concrete examples of abstract
+tests (defined within <code>fog-core</code>) and their corresponding concrete
+implementations. Trying to make PoC abstract tests, keeping the PRs up-to-date
+and still pushing forward the libraries using these new models ended
+up being too much.</p>
+<h3 id="I’ll-make-my-own-cloud-lib-with-blackjack…"><a href="#I’ll-make-my-own-cloud-lib-with-blackjack…" class="headerlink" title="I’ll make my own cloud lib, with blackjack…"></a>I’ll make my own cloud lib, with blackjack…</h3><p>The knife plugin has/had a subcommand for stack inspection. Ideally, it’s to
+be used for getting real information from the stack resources information. In
+the AWS specific version I had implemented custom flags for doing direct
+actions (like getting node IP addresses from auto scale groups). Moving to
+generic models meant that I should be able to do this in much the same
+way as the orchestration work was done. Use generic models and get provider
+specific support under the hood. But the models don’t all follow the same
+API. Some models provide extra methods that other models don’t implement
+at all, or are structured in incompatible ways making them provider specific
+models. It was here that it felt like the rabbit hole I was running down
+to get the behavior I was after was just growing too big to keep a handle
+anymore.</p>
+<p>I found myself thinking “I should build my own library”. And then, “this
+is a horrible idea”. Yet, some times starting from scratch allows certain
+freedoms that aren’t available when you have to worry about breaking changes
+and keeping things backwards compatible. It also allows for changing core
+implementations and I have ideas about some great changes. Still though,
+“this is a horrible idea”. Some times horrible ideas can have great results.</p>
+<p><a href="https://github.com/chrisroberts/miasma" title="Cloud modeling library" target="_blank" rel="noopener">Miasma</a> started like many of my PoC libraries:</p>
+<ul>
+<li>Annoyance of current state</li>
+<li>Weeks/months of mulling over different approaches</li>
+<li>Architecture ideas forming and getting thrown away</li>
+</ul>
+<p>With all this culminating into a few evenings after work with a cold beer
+laying out the “horrible idea”. And after the skeleton is defined and a
+handful of helpers are implemented it starts to move from “horrible idea”
+to just “bad idea”. With this fresh core implementation we get some pretty
+great things:</p>
+<ul>
+<li>Model down approach</li>
+<li>Light weight library</li>
+<li>Simple access points for provider specific implementations</li>
+</ul>
+<p>Instead of attempting to support the cloud API of the provider, we start
+at the model, and make the provider support the model. This simple reversal
+ensures we keep a consistent model regardless of the underlying provider.</p>
+<p>We also get to re-pick our underlying libraries, which is an important
+part of the new implementation. <a href="http://www.nokogiri.org" title="XML is like violence - if it doesn’t solve your problems, you are not using enough of it." target="_blank" rel="noopener">Nokogiri</a> which is an awesome library
+provides a lot of pain when it’s a hard requirement. The need for build
+tools, and the time required for compilations start to compound as it
+becomes a requirement within deployed tooling. So, lets make it an actual
+choice! With <code>multi_json</code> allowing for lazy requirements on the JSON library,
+we’ll use <code>multi_xml</code> to do the same for the XML library.</p>
+<p>Slowly moving from “horrible idea” to “bad idea”, all these internal implementation
+changes keep nudging the scale. Yet, all these things are just abstracts. At this
+points we could be hovering around “neutral idea”. Everything sounds awesome in
+theory. Concrete implemenations actually make it awesome. So lets make some awesome.</p>
+<h3 id="Miasma-Compute"><a href="#Miasma-Compute" class="headerlink" title="Miasma Compute"></a>Miasma Compute</h3><p>So I started with an AWS compute provider. Low hanging fruit for the PoC. Well, not
+really. AWS signature v4 is kind of a pain. And that took some cycles getting everything
+formatted correctly, and the signature correct. Good for “experience” but not super
+helpful if this doesn’t pan out. Oh well, onward and upward!</p>
+<p>With the signature4 implementation done, it took about 30 minutes to get the
+API parts implemented for the basic compute model. Great! Now we need another provider
+to actually validate this modeling approach is valid. So lets lay down a Rackspace
+provider. Cycle to get RS authentication in working order, and spend an hour
+getting the implementation done, and reworking some things that weren’t really
+generic.</p>
+<p>End result: concrete awesome!</p>
+<h3 id="Not-a-horrible-idea-reclassification"><a href="#Not-a-horrible-idea-reclassification" class="headerlink" title="Not a horrible idea (reclassification)"></a>Not a horrible idea (reclassification)</h3><p>So now the benefits of starting from scratch are showing. It’s proving that we
+get some great things. So lets power forward! And now we have a new model
+based cloud API library that’s starting to come together.</p>
+<h2 id="In-Action"><a href="#In-Action" class="headerlink" title="In Action"></a>In Action</h2><figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'miasma'</span></span><br><span class="line"></span><br><span class="line">compute = Miasm.api(</span><br><span class="line">  <span class="symbol">:provider</span> =&gt; <span class="symbol">:aws</span>,</span><br><span class="line">  <span class="symbol">:type</span> =&gt; <span class="symbol">:compute</span>,</span><br><span class="line">  <span class="symbol">:credentials</span> =&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br><span class="line">compute.servers.all.each <span class="keyword">do</span> <span class="params">|srv|</span></span><br><span class="line">  puts <span class="string">"SRV <span class="subst">#&#123;srv.id&#125;</span> -&gt; <span class="subst">#&#123;srv.address&#125;</span>"</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>and we can swap out to OpenStack, and all that changes is the compute
+configuration:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'miasma'</span></span><br><span class="line"></span><br><span class="line">compute = Miasma.api(</span><br><span class="line">  <span class="symbol">:provider</span> =&gt; <span class="symbol">:open_stack</span>,</span><br><span class="line">  <span class="symbol">:type</span> =&gt; <span class="symbol">:compute</span>,</span><br><span class="line">  <span class="symbol">:credentials</span> =&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br><span class="line">compute.servers.all.each <span class="keyword">do</span> <span class="params">|srv|</span></span><br><span class="line">  puts <span class="string">"SRV <span class="subst">#&#123;srv.id&#125;</span> -&gt; <span class="subst">#&#123;srv.address&#125;</span>"</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>The library itself is still in a beta state. Some models are still yet to be
+defined, but they are quickly getting implemented. The <a href="https://github.com/hw-labs/knife-cloudformation" title="Knife plugin for cloud formation" target="_blank" rel="noopener">knife-cloudformation</a>
+plugin has been migrated fully over to this new library, which had the added
+feature of being able to cut a proper release as it removed the custom Gemfile
+requirement. \o/</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#ruby" >
+    <span class="tag-code">ruby</span>
+  </a>
+
+  <a href="/tags#cloud" >
+    <span class="tag-code">cloud</span>
+  </a>
+
+  <a href="/tags#api" >
+    <span class="tag-code">api</span>
+  </a>
+
+  <a href="/tags#models" >
+    <span class="tag-code">models</span>
+  </a>
+
+  <a href="/tags#fog" >
+    <span class="tag-code">fog</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2014/11/20/2014-11-20-attribute-struct/">
+        <span class="nav-arrow">← </span>
+        
+          AttributeStruct - Turtles all the way down
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2015/03/12/2015-03-12-application-configuration/">
+        
+          Application Configuration
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Cloud-Infrastructure-API"><span class="toc-nav-text">Cloud Infrastructure API</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Cloud-Models"><span class="toc-nav-text">Cloud Models</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Orchestration-model"><span class="toc-nav-text">Orchestration model</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#I’ll-make-my-own-cloud-lib-with-blackjack…"><span class="toc-nav-text">I’ll make my own cloud lib, with blackjack…</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Miasma-Compute"><span class="toc-nav-text">Miasma Compute</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Not-a-horrible-idea-reclassification"><span class="toc-nav-text">Not a horrible idea (reclassification)</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#In-Action"><span class="toc-nav-text">In Action</span></a></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'http://spox.github.io/2014/11/23/2014-11-20-miasma-api/';
+    var banner = 'undefined'
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+     // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', '/imgs/404.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== '/imgs/404.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+
+    // qrcode
+    var qr = new QRious({
+      element: document.getElementById('share-qrcode'),
+      value: document.location.href
+    });
+
+    // gitment
+    var gitmentConfig = "chrisroberts";
+    if (gitmentConfig !== 'undefined') {
+      var gitment = new Gitment({
+        id: "Miasma - Cloud Models",
+        owner: "chrisroberts",
+        repo: "chrisroberts.github.io",
+        oauth: {
+          client_id: "null",
+          client_secret: "null"
+        },
+        theme: {
+          render(state, instance) {
+            const container = document.createElement('div')
+            container.lang = "en-US"
+            container.className = 'gitment-container gitment-root-container'
+            container.appendChild(instance.renderHeader(state, instance))
+            container.appendChild(instance.renderEditor(state, instance))
+            container.appendChild(instance.renderComments(state, instance))
+            container.appendChild(instance.renderFooter(state, instance))
+            return container;
+          }
+        }
+      })
+      gitment.render(document.getElementById('comments'))
+    }
+  })();
+</script>
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    &copy; 2018
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'true';
+  async("//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<script src="/js/script.js"></script>
+
+  </body>
+</html>

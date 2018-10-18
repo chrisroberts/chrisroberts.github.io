@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="Building the world I want to live in">
+  <meta name="keyword" content="spox, programming">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  
+  <title>
+    
+      Cooking up partial run lists with Chef | spox codes
+    
+  </title>
+  <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/plugins/gitment.css">
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="/js/qrious.js"></script>
+<script src="/js/gitment.js"></script>
+  
+
+</head>
+
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>spox codes</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>Cooking up partial run lists with Chef</h2>
+  <p class="post-date">2012-05-09</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><p>Modify run lists within chef.</p>
+<h2 id="Modified-Run-Lists"><a href="#Modified-Run-Lists" class="headerlink" title="Modified Run Lists"></a>Modified Run Lists</h2><p>Node convergence is an integral part of the Chef philosophy. The end goal of all
+the cookbooks and recipes is reaching convergence on the node so Chef runs amount
+to a no-op. This is a noble goal, and works well when cookbooks are built to always
+“do the right thing” and services relied upon by cookbooks are always available. However,
+there are many times when services may be down for maintenance, or a 3rd party cookbook
+has a bug in a recipe which ends up raising an exception halting the Chef run.</p>
+<p>In general, this may not be a problem. If a bug in a recipe is causing an error, fix
+the bug and upload the modified cookbook. If a service is down, wait for the service
+to come back online or modify the cookbook to not <em>rely</em> on the service being available.
+This is a fine solution in general, but it may not be applicable in all situations. In
+many cases application deployments have been moved into Chef. Application updates are
+deployed as the node converges, which is incredibly useful allowing a very tight
+integration with the node configuration and the application. This tight integration
+with Chef also introduces some strain.</p>
+<p>Lets use an example situation. Chef is configured on a node to update its yum index
+and then check the for the latest versions of some specific packages. In the majority
+of Chef runs, convergence will be met without any updates to these packages. Now,
+lets assume a new security patch needs to be applied to the application running on this
+node and the application is deployed via Chef. The developers make their modifications,
+run their tests and are ready for Chef to deploy the updated code. Chef runs and the
+yum repositories happen to be down for maintenance causing an exception to be thrown. At this
+point, the application now has no way of being deployed until either the recipe has
+been modified, tested and uploaded or the service returns.</p>
+<p>It’s at this point the question arises, “why do we care about yum updates during an
+application deployment?”. From the Chef perspective they are important because
+the node should always meet a point of convergence. From a developer perspective,
+they don’t care. The yum updates can happen later when the service becomes available and
+the needed application update should just get out now. It is here that the approach differs
+between the philosophical idea of what a chef run should do and the pragmatic approach
+of getting done what is required right now.</p>
+<h2 id="Modification-Tools"><a href="#Modification-Tools" class="headerlink" title="Modification Tools"></a>Modification Tools</h2><h3 id="Run-List-Overrides"><a href="#Run-List-Overrides" class="headerlink" title="Run List Overrides"></a>Run List Overrides</h3><p>One tool available to allow this is the run list override. Available starting in the
+0.10.10 version of Chef, a new command line argument is available: <code>--override-runlist</code>.
+This option allows explicit specification of what is loaded in the run list of the
+chef run, regardless of what is defined within the node information. This is highly
+useful if a specific recipe is required  to run, or to remove a problem bit from the
+run list of a node. One drawback to this approach is that it is an “all or nothing”
+approach. If a recipe provided via a role is causing the problems, the only solution
+is to remove the role entirely from the run list. This also means that any recipes defined
+within that role, as well as any attributes, will no longer be available. The biggest
+benefit of the override run list is the fact that it is built into Chef, and as such is
+available anywhere the version is recent enough.</p>
+<h2 id="runlist-modifiers-Cookbook"><a href="#runlist-modifiers-Cookbook" class="headerlink" title="runlist_modifiers Cookbook"></a>runlist_modifiers Cookbook</h2><p>This cookbook was born out of extra options for run list modification that were not
+accepted upstream into Chef. This cookbook provides two extra tools for modifying a Chef run. One
+allows providing a list of recipes that are restricted from running, the other allowing
+a list or recipes that are the only recipes allowed within a runlist. First, we will
+look at restricting recipes from running.</p>
+<h2 id="Example-Recipes"><a href="#Example-Recipes" class="headerlink" title="Example Recipes"></a>Example Recipes</h2><p>First, lets define a couple very simple recipes in a test cookbook to demonstrate:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cookbooks/testbook/recipes/default.rb</span></span><br><span class="line"></span><br><span class="line">include_recipe <span class="string">'testbook::restricted'</span></span><br><span class="line"></span><br><span class="line">ruby_block <span class="string">"loaded_default"</span> <span class="keyword">do</span></span><br><span class="line">  block <span class="keyword">do</span></span><br><span class="line">    puts <span class="string">'default'</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cookbooks/testbook/recipes/restricted.rb</span></span><br><span class="line"></span><br><span class="line">ruby_block <span class="string">"loaded_restricted"</span> <span class="keyword">do</span></span><br><span class="line">  block <span class="keyword">do</span></span><br><span class="line">    puts <span class="string">'restricted'</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<h3 id="Restricted-Recipes"><a href="#Restricted-Recipes" class="headerlink" title="Restricted Recipes"></a>Restricted Recipes</h3><p>Restricted recipes have a very simple implementation. If a recipe is attempted to be
+loaded that is within the restricted recipes list, an exception will be raised preventing
+it and any recipes that depend on the restricted recipe from being loaded. This is a
+very important point of the restricted recipes. When a recipe is defined within the
+restricted recipe list, it and any recipes dependent on it are prevented from running.</p>
+<p>Since this information must be found via attributes, the restricted recipes can be listed
+via role. However, these are generally one off runs, so we will use a local json file
+on the node.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ~/attrs.json</span><br><span class="line">&#123;&quot;restricted_recipes&quot;: [&quot;testbook&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<p>Now, chef-client is run with the json file provided:</p>
+<ul>
+<li><code>chef-client -j ~/attrs.json</code></li>
+</ul>
+<p>With the restricted recipes enabled, warnings will now be produced when the recipe is
+encountered and it will not be allowed to run:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[Wed, 09 May 2012 02:14:27 +0000] WARN: Restricted recipes modifier is enabled [testbook, testbook::default]</span><br><span class="line">[Wed, 09 May 2012 02:14:28 +0000] WARN: Restricted recipe encountered: testbook -&gt; Not Loaded</span><br></pre></td></tr></table></figure>
+<p>Restricted recipes that are dependencies of other recipes will make a note about the
+dependency. Updated json file:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ~/attrs.json</span><br><span class="line">&#123;&quot;restricted_recipes&quot;: [&quot;testbook::restricted&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<p>And the run will now restrict both the default and restricted recipes from being run:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[Wed, 09 May 2012 02:22:09 +0000] WARN: Restricted recipes modifier is enabled [testbook::restricted]</span><br><span class="line">[Wed, 09 May 2012 02:22:09 +0000] WARN: Restricted recipe encountered: testbook::restricted -&gt; Not Loaded</span><br><span class="line">[Wed, 09 May 2012 02:22:09 +0000] WARN: Restricted recipe dependency found. (testbook depends on testbook::restricted). testbook -&gt; Not Loaded</span><br></pre></td></tr></table></figure>
+<h3 id="Allowed-Recipes"><a href="#Allowed-Recipes" class="headerlink" title="Allowed Recipes"></a>Allowed Recipes</h3><p>Allowed recipes work slightly differently. Instead of allowing <em>only</em> the allowed recipes
+to run, the allowed recipes attribute is used to prune the run list. Any dependencies
+required are also allowed to be loaded (unless they are specified within the restricted
+run list). This becomes extremely useful if only a specific set of base recipes are desired
+to run. A great example would be an application deployment recipe. All role information will
+be loaded but the run list can be pruned to only contain the application deployment recipe.</p>
+<p>Lets assume our run list looks like the following:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO: Run List expands to [users::sysadmins, sudo, chef-client::config, chef-client::cron, chef_gem, runlist_modifiers, testbook]</span><br></pre></td></tr></table></figure>
+<p>If we use the default recipe in testbook, we can easily see how dependencies (testbook::restricted) are allowed to load:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># ~/attr.json</span><br><span class="line">&#123;&quot;allowed_recipes&quot;: [&quot;testbook&quot;]&#125;</span><br></pre></td></tr></table></figure>
+<p>with the output:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Allowed recipes modifier is enabled [testbook, testbook::default]</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Recipe encountered not found in allowed recipe set: users::sysadmins</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Restricted recipe encountered: users::sysadmins -&gt; Not Loaded</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Recipe encountered not found in allowed recipe set: sudo</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Restricted recipe encountered: sudo -&gt; Not Loaded</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Recipe encountered not found in allowed recipe set: chef-client::config</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Restricted recipe encountered: chef-client::config -&gt; Not Loaded</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Recipe encountered not found in allowed recipe set: chef-client::cron</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Restricted recipe encountered: chef-client::cron -&gt; Not Loaded</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Recipe encountered not found in allowed recipe set: chef_gem</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] WARN: Restricted recipe encountered: chef_gem -&gt; Not Loaded</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] INFO: Processing ruby_block[loaded_default] action create (testbook::default line 3)</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] INFO: ruby_block[loaded_default] called</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] INFO: Processing ruby_block[loaded_restricted] action create (testbook::restricted line 2)</span><br><span class="line">[Wed, 09 May 2012 03:29:11 +0000] INFO: ruby_block[loaded_restricted] called</span><br></pre></td></tr></table></figure>
+<p>This shows that all recipes not in the allowed recipes list are restricted from loading, but dependencies are allowed.</p>
+<hr>
+<p><small></small></p>
+<ul>
+<li><a href="http://www.opscode.com/chef/" target="_blank" rel="noopener">Opsode Chef</a></li>
+<li><a href="http://community.opscode.com/cookbooks/runlist_modifiers" target="_blank" rel="noopener">Runlist Modifiers</a></li>
+<li><a href="http://lists.opscode.com/sympa/arc/chef-dev/2012-03/msg00022.html" target="_blank" rel="noopener">ML Discussion</a></li>
+</ul>
+<p></p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#chef" >
+    <span class="tag-code">chef</span>
+  </a>
+
+  <a href="/tags#recipes" >
+    <span class="tag-code">recipes</span>
+  </a>
+
+  <a href="/tags#ruby" >
+    <span class="tag-code">ruby</span>
+  </a>
+
+  <a href="/tags#devops" >
+    <span class="tag-code">devops</span>
+  </a>
+
+  <a href="/tags#run_list" >
+    <span class="tag-code">run_list</span>
+  </a>
+
+  <a href="/tags#runlist_modifiers" >
+    <span class="tag-code">runlist_modifiers</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+    
+      <a class="nav-right" href="/2012/06/23/2012-06-23-chef-gems-and-embedded-ruby/">
+        
+          Chef gems and embedded ruby
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Modified-Run-Lists"><span class="toc-nav-text">Modified Run Lists</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Modification-Tools"><span class="toc-nav-text">Modification Tools</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Run-List-Overrides"><span class="toc-nav-text">Run List Overrides</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#runlist-modifiers-Cookbook"><span class="toc-nav-text">runlist_modifiers Cookbook</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Example-Recipes"><span class="toc-nav-text">Example Recipes</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Restricted-Recipes"><span class="toc-nav-text">Restricted Recipes</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Allowed-Recipes"><span class="toc-nav-text">Allowed Recipes</span></a></li></ol></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'http://spox.github.io/2012/05/09/2012-05-09-cooking-up-partial-run-lists-with-chef/';
+    var banner = 'undefined'
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+     // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', '/imgs/404.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== '/imgs/404.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+
+    // qrcode
+    var qr = new QRious({
+      element: document.getElementById('share-qrcode'),
+      value: document.location.href
+    });
+
+    // gitment
+    var gitmentConfig = "chrisroberts";
+    if (gitmentConfig !== 'undefined') {
+      var gitment = new Gitment({
+        id: "Cooking up partial run lists with Chef",
+        owner: "chrisroberts",
+        repo: "chrisroberts.github.io",
+        oauth: {
+          client_id: "null",
+          client_secret: "null"
+        },
+        theme: {
+          render(state, instance) {
+            const container = document.createElement('div')
+            container.lang = "en-US"
+            container.className = 'gitment-container gitment-root-container'
+            container.appendChild(instance.renderHeader(state, instance))
+            container.appendChild(instance.renderEditor(state, instance))
+            container.appendChild(instance.renderComments(state, instance))
+            container.appendChild(instance.renderFooter(state, instance))
+            return container;
+          }
+        }
+      })
+      gitment.render(document.getElementById('comments'))
+    }
+  })();
+</script>
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    &copy; 2018
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'true';
+  async("//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<script src="/js/script.js"></script>
+
+  </body>
+</html>

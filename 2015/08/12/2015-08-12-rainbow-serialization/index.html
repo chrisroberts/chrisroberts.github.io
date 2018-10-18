@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="Building the world I want to live in">
+  <meta name="keyword" content="spox, programming">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  
+  <title>
+    
+      Serialized Rainbows | spox codes
+    
+  </title>
+  <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/plugins/gitment.css">
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="/js/qrious.js"></script>
+<script src="/js/gitment.js"></script>
+  
+
+</head>
+
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>spox codes</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>Serialized Rainbows</h2>
+  <p class="post-date">2015-08-12</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><p>A short story on the origin of the SparkleFormation library.</p>
+<h2 id="SparkleFormation-an-origin-story"><a href="#SparkleFormation-an-origin-story" class="headerlink" title="SparkleFormation - an origin story"></a>SparkleFormation - an origin story</h2><p>SparkleFormation is a Ruby library that was born out of the insanity induced attempting
+to understand how anyone could possibly be managing anything of even basic complexity
+in CFN using JSON templates. What I found was lots of copy paste nightmare fuel and
+like many before me ran screaming. It is utter madness. And for good reason. JSON is
+not an interface. It’s a serialization format.</p>
+<blockquote>
+<p><em>SIDEBAR:</em> If you are attempting to compose and maintain anything in a serialization format, just stop.
+I mean, if you’re a masochist then more power to you. Hell, some other twisted souls have
+already integrated things like ERB into YAML, so you know you’re not alone. But if you are
+attempting to do real work then start using tools that generate serialized data. Computers
+can do an amazingly good job producing serialized data.</p>
+</blockquote>
+<p>Anyway, I had just written AttributeStruct and its only job is to make Ruby produce
+simple data types in a DSL style. So I did the only thing a person staring into the great
+abyss could possibly do. I made a tool to generate JSON. Toss in some simple conventions
+to allow for reusability, some helper methods to generate common data structures, and
+SparkleFormation rose from the black abyss.</p>
+<h2 id="SparkleFormation-the-early-years"><a href="#SparkleFormation-the-early-years" class="headerlink" title="SparkleFormation - the early years"></a>SparkleFormation - the early years</h2><p>SparkleFormation got legs. It got a knife plugin (knife-cloudformation) providing a CLI
+interface to the library itself. Features started getting added. More helper methods.
+More reusability features and along with those features new patterns that emerged. New
+stack templates could be created with a few lines, and all that previously copy/pasted
+JSON was DRY easy to read Ruby.</p>
+<p>Then, it happened. The templates were getting so easy to create that stacks previously
+deemed too complex were now normal. And limits started to be hit. Resource limits,
+parameter limits, output limits. The garden suddenly lost its life and vibrance. Working
+around limitations introduced bad patterns to get things moving. I knew of nested
+stacks, but they were <em>hard</em>. In the context of SparkleFormation, they were really hard.
+It introduced new required functionality of remote template storage to even begin to
+work, and integrating that into the template generation was hard and took some time
+along with a few tries to get right.</p>
+<h3 id="Original-Nesters"><a href="#Original-Nesters" class="headerlink" title="Original Nesters"></a>Original Nesters</h3><p>The original nesting functionality was very simple. It based itself on the <code>--apply-stack</code>
+option provided via the knife-cloudformation plugin tooling which itself was a manual
+implementation of functionality provided by nested stacks. The <code>--apply-stack</code> functionality
+goes something like this:</p>
+<blockquote>
+<p>Given an output from a stack (StackA)</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  "Outputs": &#123;</span><br><span class="line">    "ElbDns": &#123;</span><br><span class="line">      "Description": "Address of ELB",</span><br><span class="line">      "Value": "http://output.example.com"</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>When applied to a new stack (StackB), automatically default matching parameters</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  "Parameters": &#123;</span><br><span class="line">    "ElbDns": &#123;</span><br><span class="line">      "Type": "String",</span><br><span class="line">      "Default": "http://default.example.com"</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This is pretty useful. Stacks can generate values in their outputs. Those outputs can then
+be used to automatically populate parameters on new (or updated) stacks. Less interaction
+required by the end user. Pretty great. In the above example, applying StackA to the
+creation of StackB will automatically update the default value for <code>ElbDns</code> to
+<code>&quot;http://output.example.com&quot;</code>.</p>
+<p>This does introduce update issues. If a stack is updated, and its outputs are modified,
+any other stacks that were using those outputs are now using stale values. The responsibility
+of updating the <em>other</em> stacks rests on the end user, which introduces a list of new issues
+from knowing what stacks require updates to resolving the dependency ordering if it exists.
+Using nested stacks removes this issue since we can reference stack outputs directly within
+the template, and any changes to those outputs will automatically trigger an update on any
+nested stack referencing those outputs.</p>
+<p>And this is how the original nesting behavior works. You nest your first stack, and all
+parameters defined in that stack are extracted to the top level stack, then referenced
+in the nested stack resource allowing the CLI tooling to continue working and all control
+for all the stacks being driven from the “root” stack.</p>
+<blockquote>
+<p>What?</p>
+</blockquote>
+<p>I know, right? Lets use an example. Pretend I have a SparkleFormation template (TemplateA):</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:template_a</span>) <span class="keyword">do</span></span><br><span class="line">  ...</span><br><span class="line">  parameters.fubar <span class="keyword">do</span></span><br><span class="line">    type <span class="string">'String'</span></span><br><span class="line">    default <span class="string">'FOOBAR'</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>Now, we’re going to nest that template into another template (Root):</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:root</span>) <span class="keyword">do</span></span><br><span class="line">  nest!(<span class="symbol">:template_a</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>When we generate Root JSON temlate we end up with one resource (the TemplateA stack resource)
+and one parameter:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  "Parameters": &#123;</span><br><span class="line">    "Fubar": &#123;</span><br><span class="line">      "Type": "String",</span><br><span class="line">      "Default": "FOOBAR"</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  "Resources": &#123;</span><br><span class="line">    "TemplateA": &#123;</span><br><span class="line">      "Type": "AWS::CloudFormation::Stack",</span><br><span class="line">      "Properties": &#123;</span><br><span class="line">        "Parameters": &#123;</span><br><span class="line">          "Fubar": &#123;</span><br><span class="line">            "Ref": "Fubar"</span><br><span class="line">          &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>The <code>Fubar</code> parameter was bubbled up from TemplateA to the Root template. This allows the
+Root stack to control the contained template (stack updates) so only a single point of
+access is required. While cool, this has <em>nothing</em> to do with the <code>--apply-stack</code> talk
+that led to these examples. Well, it is related because the parameter bubbling is just
+the start. Lets expand TemplateA to include an output:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">  "Outputs": &#123;</span><br><span class="line">    "SuperFubar": &#123;</span><br><span class="line">      "Description": "Fubar with powers",</span><br><span class="line">      "Value": &#123;</span><br><span class="line">        "Ref": "Fubar"</span><br><span class="line">      &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>Now, lets create a new template (TemplateB):</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:template_b</span>) <span class="keyword">do</span></span><br><span class="line">  ...</span><br><span class="line">  parameters.super_fubar <span class="keyword">do</span></span><br><span class="line">    type <span class="string">'String'</span></span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  ...</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>And we update our Root stack to nest in TemplateB:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:root</span>) <span class="keyword">do</span></span><br><span class="line">  nest!(<span class="symbol">:template_a</span>)</span><br><span class="line">  nest!(<span class="symbol">:template_b</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>Generating the Root JSON template looks the same as before, but with
+a new stack resource (TemplateB). The <code>Parameters</code> block has not changed
+(no entry for <code>SuperFubar</code>), but we do see <code>SuperFubar</code> in the <code>Parameters</code>
+section of the stack resource:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">    "TemplateB": &#123;</span><br><span class="line">      "Type": "AWS::CloudFormation::Stack",</span><br><span class="line">      "Properties": &#123;</span><br><span class="line">        "Parameters": &#123;</span><br><span class="line">          "SuperFubar": &#123;</span><br><span class="line">            "Fn:GetAtt": [</span><br><span class="line">              "TemplateA",</span><br><span class="line">              <span class="string">"Outputs.SuperFubar"</span></span><br><span class="line">            ]</span><br><span class="line">          &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>What is happening is that SparkleFormation automatically applies the same
+behavior <code>--apply-stack</code> provides, but does it automatically within the
+template. This means that when the <code>SuperFubar</code> output values changes in
+TemplateA due to a stack update, TemplateB will automatically get triggered
+for an update. Everything is wonderful!</p>
+<h3 id="The-other-stuff"><a href="#The-other-stuff" class="headerlink" title="The other stuff"></a>The other stuff</h3><p>More things came out of this library origin. The Miasma library grew out of
+frustrations with the inconsistencies in fog and hijacked work. The sfn
+tool grew out of the knife-cloudformation plugin to free the CLI tool of
+its knife dependency. And all the functionality bottled up in the sfn
+CLI can trace their roots back to a moment of utter JSON induced horror.</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#ruby" >
+    <span class="tag-code">ruby</span>
+  </a>
+
+  <a href="/tags#attribute_struct" >
+    <span class="tag-code">attribute_struct</span>
+  </a>
+
+  <a href="/tags#sparkle_formation" >
+    <span class="tag-code">sparkle_formation</span>
+  </a>
+
+  <a href="/tags#cfn" >
+    <span class="tag-code">cfn</span>
+  </a>
+
+  <a href="/tags#cloudformation" >
+    <span class="tag-code">cloudformation</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2015/03/13/2015-03-13-the-magic-text-book/">
+        <span class="nav-arrow">← </span>
+        
+          The magic text book
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2016/01/27/2016-01-27-hacking-with-attributestruct/">
+        
+          Building crazy with AttributeStruct
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#SparkleFormation-an-origin-story"><span class="toc-nav-text">SparkleFormation - an origin story</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#SparkleFormation-the-early-years"><span class="toc-nav-text">SparkleFormation - the early years</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Original-Nesters"><span class="toc-nav-text">Original Nesters</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#The-other-stuff"><span class="toc-nav-text">The other stuff</span></a></li></ol></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'http://spox.github.io/2015/08/12/2015-08-12-rainbow-serialization/';
+    var banner = 'undefined'
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+     // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', '/imgs/404.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== '/imgs/404.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+
+    // qrcode
+    var qr = new QRious({
+      element: document.getElementById('share-qrcode'),
+      value: document.location.href
+    });
+
+    // gitment
+    var gitmentConfig = "chrisroberts";
+    if (gitmentConfig !== 'undefined') {
+      var gitment = new Gitment({
+        id: "Serialized Rainbows",
+        owner: "chrisroberts",
+        repo: "chrisroberts.github.io",
+        oauth: {
+          client_id: "null",
+          client_secret: "null"
+        },
+        theme: {
+          render(state, instance) {
+            const container = document.createElement('div')
+            container.lang = "en-US"
+            container.className = 'gitment-container gitment-root-container'
+            container.appendChild(instance.renderHeader(state, instance))
+            container.appendChild(instance.renderEditor(state, instance))
+            container.appendChild(instance.renderComments(state, instance))
+            container.appendChild(instance.renderFooter(state, instance))
+            return container;
+          }
+        }
+      })
+      gitment.render(document.getElementById('comments'))
+    }
+  })();
+</script>
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    &copy; 2018
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'true';
+  async("//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<script src="/js/script.js"></script>
+
+  </body>
+</html>

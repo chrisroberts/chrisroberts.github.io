@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="Building the world I want to live in">
+  <meta name="keyword" content="spox, programming">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  
+  <title>
+    
+      The magic text book | spox codes
+    
+  </title>
+  <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/plugins/gitment.css">
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="/js/qrious.js"></script>
+<script src="/js/gitment.js"></script>
+  
+
+</head>
+
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>spox codes</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>The magic text book</h2>
+  <p class="post-date">2015-03-13</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><p>A new approach at dependency solving.</p>
+<h2 id="Grimoire"><a href="#Grimoire" class="headerlink" title="Grimoire"></a>Grimoire</h2><p>A couple years ago I was at the <a href="https://chef.io" title="A systems integration framework" target="_blank" rel="noopener">Chef</a> summit, and had a session with some of my workmates
+on cookbook dependency resolution. The result of the session was less than ideal, with
+trees being forced as the focus and the sight of the forest lost. It wasn’t too surprising.
+Resolution was already an issue, and it’s hard to sway the conversation from
+an issue that was punching people in the face for the one stabbing them in the back.
+Compounding this was the fact that I had no solution for the problem, just some ideas
+on how it could be fixed.</p>
+<h3 id="Problem"><a href="#Problem" class="headerlink" title="Problem"></a>Problem</h3><p>The problem is easily demonstrable via the classic infrastructure repository layout. Reasons
+for using the infrastructure repository approach are many, but it’s not really relevant
+here. What’s important is that we aren’t solving for a single cookbook. We want to solve
+for an entire infrastructure, and this is where existing tools like <a href="https://rubygems.org/gems/librarian" title="A framework for bundlers" target="_blank" rel="noopener">Librarian</a> and <a href="https://rubygems.org/gems/berkshelf" title="Manages a Cookbook&#39;s, or an Application&#39;s, Cookbook dependencies" target="_blank" rel="noopener">Berkshelf</a>
+come up short. They provide a single “best” path resolution given a set of dependencies
+and constraints. This is fine for a single node. But at the infrastructure level what we
+really want is <em>all</em> the cookbooks available within the defined set of dependencies and
+their constraints.</p>
+<p>Since both <a href="https://rubygems.org/gems/librarian" title="A framework for bundlers" target="_blank" rel="noopener">Librarian</a> and <a href="https://rubygems.org/gems/berkshelf" title="Manages a Cookbook&#39;s, or an Application&#39;s, Cookbook dependencies" target="_blank" rel="noopener">Berkshelf</a> model themselves very closely on <a href="https://rubygems.org/gems/bundler" title="Manages an application&#39;s dependencies through its entire life" target="_blank" rel="noopener">Bundler</a>, an analogy
+with <a href="https://rubygems.org/gems/bundler" title="Manages an application&#39;s dependencies through its entire life" target="_blank" rel="noopener">Bundler</a> and <a href="https://rubygems.org" title="Your community gem host" target="_blank" rel="noopener">RubyGems</a> seems appropriate. Currently solvers are acting like <a href="https://rubygems.org/gems/bundler" title="Manages an application&#39;s dependencies through its entire life" target="_blank" rel="noopener">Bundler</a>:
+they solve for a single application. What we want is a solver that solves for <a href="https://rubygems.org" title="Your community gem host" target="_blank" rel="noopener">RubyGems</a>:
+all the gems that may be required by all the applications. In our case, an application
+is equivalent to a node, and <a href="https://rubygems.org" title="Your community gem host" target="_blank" rel="noopener">RubyGems</a> is equivalent to our Chef Server.</p>
+<h3 id="Where-to-start"><a href="#Where-to-start" class="headerlink" title="Where to start"></a>Where to start</h3><p>So, this all came up awhile ago, and has been mostly ignored as a nuisance, but really
+annoying when things either can’t resolve, or multiple versions may be required.
+With <a href="https://github.com/chef/supermarket" title="Chef&#39;s community platform" target="_blank" rel="noopener">supermarket</a> finally adding support for full manifest, I wanted to start using it within
+<a href="https://rubygems.org/gems/librarian" title="A framework for bundlers" target="_blank" rel="noopener">Librarian</a>. The project hasn’t been updated for awhile, and it looks like the main
+contributor (<a href="https://github.com/yfeldblum" title="Jay Feldblum" target="_blank" rel="noopener">yfeldblum</a>) is no longer employed with the owning organization. I pinged to
+see if maybe I could take over maintanence, start adding support for the new features
+available from the <a href="https://github.com/chef/supermarket" title="Chef&#39;s community platform" target="_blank" rel="noopener">supermarket</a> and start adding some solutions for this infrastructure
+resolution problem. When no reply came, I looked at just forking and starting a new
+project based on <a href="https://rubygems.org/gems/librarian" title="A framework for bundlers" target="_blank" rel="noopener">Librarian</a> since the code is all MIT licensed. But I had also been
+reading and browsing around looking at different depsolvers, different implementation
+approaches. Why not take a crack at one of these different ideas? I mean, if it totally
+crash landed, I could always just fall back to forking <a href="https://rubygems.org/gems/librarian" title="A framework for bundlers" target="_blank" rel="noopener">Librarian</a>.</p>
+<h3 id="The-text-book"><a href="#The-text-book" class="headerlink" title="The text book"></a>The text book</h3><p>I had been reading and searching on different solvers around, and how one implementation
+differed from another. It would be great to have something I could just build on top
+of and not have to create something new. During my searching I stumbled across the
+dependency resolver used with <a href="https://www.meteor.com/version-solver" title="Meteor version solver" target="_blank" rel="noopener">meteor</a>. It uses ideas from the <a href="https://en.wikipedia.org/wiki/A*_search_algorithm" title="A* search algorithm" target="_blank" rel="noopener">A* algorithm</a> to generate
+resolution paths. And one of the really cool things that it did was only provide updates
+to libraries that <em>required</em> updates unless it had been requested. This was something
+that always bugged me about all the current tools I have been using (<a href="https://rubygems.org/gems/bundler" title="Manages an application&#39;s dependencies through its entire life" target="_blank" rel="noopener">bundler</a>, <a href="https://rubygems.org/gems/librarian" title="A framework for bundlers" target="_blank" rel="noopener">librarian</a>, etc)
+and was added to the list of “things I would like”.</p>
+<p>Keeping the library as pure <a href="https://ruby-lang.org" title="Ruby programming language" target="_blank" rel="noopener">Ruby</a> was important, mainly for portability (more specifically
+portability between <a href="https://ruby-lang.org" title="Ruby programming language" target="_blank" rel="noopener">Ruby</a> platforms). I read through the <a href="https://www.meteor.com/version-solver" title="Meteor version solver" target="_blank" rel="noopener">meteor</a> code to get a rough idea
+of how they mutated the algorithm for solving use, and read lots more on the <a href="https://en.wikipedia.org/wiki/A*_search_algorithm" title="A* search algorithm" target="_blank" rel="noopener">A* algorithm</a>
+itself, building slim implementations and playing around with the results. Once it seemed
+like a pretty comfortable idea, I took a crack at writing a generic solver library.</p>
+<h3 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h3><h4 id="PriorityQueue"><a href="#PriorityQueue" class="headerlink" title="PriorityQueue"></a>PriorityQueue</h4><p>The most important requirement for the solver is a priority queue. There’s a few libraries
+around that provide priority queues, but I only need a few specific behaviors and I want
+something that I can easily optimize. Since it might end up useful elsewhere in the future,
+I popped open the <a href="https://rubygems.org/gems/bogo" title="Helper libraries" target="_blank" rel="noopener">Bogo</a> library and added in a new class: <code>Bogo::PriorityQueue</code>. It has
+a few features/restrictions:</p>
+<ul>
+<li>Sorts queue based on score</li>
+<li>Sorting can be ascending or descending</li>
+<li>Scores can be provided as a <code>Numeric</code> or a <code>Proc</code> providing a <code>Numeric</code></li>
+<li>An instance cannot exist within queue multiple times</li>
+</ul>
+<p>The <code>Proc</code> support for scoring was added just because it could be added. It currently
+isn’t being used anywhere, and for good reason. With <code>Proc</code> based scoring, we have
+to resort the queue prior to every <code>PriorityQueue#pop</code> since the score value may
+have changed. It still seems like it may be useful at some point, for some thing, so
+why not throw in support for it while we’re there.</p>
+<h4 id="Requirement-of-a-Dependency-for-a-Version"><a href="#Requirement-of-a-Dependency-for-a-Version" class="headerlink" title="Requirement of a Dependency for a Version"></a>Requirement of a Dependency for a Version</h4><p>We also need a way to represent a constraint requirement, a dependency requirement,
+and a version. As luck would have it, <a href="https://ruby-lang.org" title="Ruby programming language" target="_blank" rel="noopener">Ruby</a> ships with <a href="https://rubygems.org" title="Your community gem host" target="_blank" rel="noopener">RubyGems</a> which means we already
+have these things available from the <a href="https://rubygems.org" title="Your community gem host" target="_blank" rel="noopener">RubyGems</a> library. So lets just hijack these classes
+and use them instead of re-inventing them and most likely providing less features.</p>
+<p><em>NOTE: These still need some work, specifically grimoire providing an interface the class <em>must</em>
+adhere to so they can easily be swapped.</em></p>
+<h3 id="Build-the-stupid-thing-already"><a href="#Build-the-stupid-thing-already" class="headerlink" title="Build the stupid thing already!"></a>Build the stupid thing already!</h3><p>With the requirements accounted for, lets populate up the library with the things we
+need. We’ll add a <code>Unit</code> class to represent a “thing” that has a “version”. A
+<code>RequirementList</code> that provides names and version constraints. A <code>System</code> that holds
+all the <code>Unit</code>s we have available. A <code>Solver</code> to do the solving. And finally,
+a <code>UnitScoreKeeper</code> that can provide a score for a given <code>Unit</code>.</p>
+<p>Alright, that was easy! So we end up with a <code>System</code> that we populate up with <code>Unit</code>s
+generated from where ever the actual implemention application decides. That gets passed
+to the <code>Solver</code> along with the <code>RequirementList</code>. The first thing the <code>Solver</code> does is
+build its “world”. The world building is merely trimming down the <code>Unit</code>s defined within
+the <code>System</code> to the set allowed based on the constraints provided within the <code>RequirementList</code>
+(and the dependency chains).</p>
+<p><em>Wait: This world thing seems a lot like the “solving for <a href="https://rubygems.org" title="Your community gem host" target="_blank" rel="noopener">RubyGems</a>“ thing we were talking about earlier…</em></p>
+<p>Once the world has been defined, it’s time to actually solve. By default the solver will
+discover valid solution paths and provide a <code>PriorityQueue</code> ordered by “best” solution, which
+in the default case is the latest possible version available within the applied constraints.
+This behavior is on par with the other solvers. Great, but lets do something with a little more
+wow.</p>
+<p>When we initialize the <code>Solver</code>, we can provide a <code>UnitScoreKeeper</code>. Within grimoire the
+<code>UnitScoreKeeper</code> is just an abstract class, relying on the application to provide
+the proper scoring behavior. It has a single method, which is provided a <code>Unit</code>. The
+result is a score for that given <code>Unit</code> based on what ever criteria is important to
+the application. When the <code>Solver</code> generates solution paths, it starts by creating
+a <code>PriorityQueue</code> for each <code>Unit</code> name, and then populates the queue with every
+instance with that name available. The <code>UnitScoreKeeper</code> allows the application to
+suggest to the solver to prefer one version of another based on the score provided.
+This allows doing things like weighting versions currently in use, so they are
+not updated unless it’s required, giving a “least impact” style of updates. Awesome!</p>
+<h3 id="Generic-library"><a href="#Generic-library" class="headerlink" title="Generic library"></a>Generic library</h3><p>The result of this work is a generic library that applications can build off to
+create specialized solvers. It allows these specialized solvers to:</p>
+<ul>
+<li>Find single path resolution</li>
+<li>Find single path weighted resolution</li>
+<li>Find all <code>Unit</code>s required to solve for a given <code>RequirementList</code></li>
+</ul>
+<p>\o/</p>
+<ul>
+<li><a href="https://github.com/spox/grimoire" target="_blank" rel="noopener">https://github.com/spox/grimoire</a></li>
+</ul>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#ruby" >
+    <span class="tag-code">ruby</span>
+  </a>
+
+  <a href="/tags#grimoire" >
+    <span class="tag-code">grimoire</span>
+  </a>
+
+  <a href="/tags#batali" >
+    <span class="tag-code">batali</span>
+  </a>
+
+  <a href="/tags#librarian" >
+    <span class="tag-code">librarian</span>
+  </a>
+
+  <a href="/tags#depsolver" >
+    <span class="tag-code">depsolver</span>
+  </a>
+
+  <a href="/tags#constraints" >
+    <span class="tag-code">constraints</span>
+  </a>
+
+  <a href="/tags#dependencies" >
+    <span class="tag-code">dependencies</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2015/03/12/2015-03-12-application-configuration/">
+        <span class="nav-arrow">← </span>
+        
+          Application Configuration
+        
+      </a>
+    
+    
+      <a class="nav-right" href="/2015/08/12/2015-08-12-rainbow-serialization/">
+        
+          Serialized Rainbows
+        
+        <span class="nav-arrow"> →</span>
+      </a>
+    
+  </div>
+
+    <!-- NAV END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Grimoire"><span class="toc-nav-text">Grimoire</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Problem"><span class="toc-nav-text">Problem</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Where-to-start"><span class="toc-nav-text">Where to start</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#The-text-book"><span class="toc-nav-text">The text book</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Requirements"><span class="toc-nav-text">Requirements</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#PriorityQueue"><span class="toc-nav-text">PriorityQueue</span></a></li><li class="toc-nav-item toc-nav-level-4"><a class="toc-nav-link" href="#Requirement-of-a-Dependency-for-a-Version"><span class="toc-nav-text">Requirement of a Dependency for a Version</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Build-the-stupid-thing-already"><span class="toc-nav-text">Build the stupid thing already!</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Generic-library"><span class="toc-nav-text">Generic library</span></a></li></ol></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'http://spox.github.io/2015/03/13/2015-03-13-the-magic-text-book/';
+    var banner = 'undefined'
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+     // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', '/imgs/404.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== '/imgs/404.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+
+    // qrcode
+    var qr = new QRious({
+      element: document.getElementById('share-qrcode'),
+      value: document.location.href
+    });
+
+    // gitment
+    var gitmentConfig = "chrisroberts";
+    if (gitmentConfig !== 'undefined') {
+      var gitment = new Gitment({
+        id: "The magic text book",
+        owner: "chrisroberts",
+        repo: "chrisroberts.github.io",
+        oauth: {
+          client_id: "null",
+          client_secret: "null"
+        },
+        theme: {
+          render(state, instance) {
+            const container = document.createElement('div')
+            container.lang = "en-US"
+            container.className = 'gitment-container gitment-root-container'
+            container.appendChild(instance.renderHeader(state, instance))
+            container.appendChild(instance.renderEditor(state, instance))
+            container.appendChild(instance.renderComments(state, instance))
+            container.appendChild(instance.renderFooter(state, instance))
+            return container;
+          }
+        }
+      })
+      gitment.render(document.getElementById('comments'))
+    }
+  })();
+</script>
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    &copy; 2018
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'true';
+  async("//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<script src="/js/script.js"></script>
+
+  </body>
+</html>
