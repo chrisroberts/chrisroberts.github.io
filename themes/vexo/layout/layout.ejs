@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
   <%- partial('_partial/head') %>
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
   <body>
     <%- partial('_partial/header') %>
     <%- body %>

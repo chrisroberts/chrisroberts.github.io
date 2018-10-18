@@ -4,7 +4,7 @@
   <meta name="description" content="<%= config.description || theme.description %>">
   <meta name="keyword" content="<%= config.keyword || theme.keyword %>">
   <% if (config.favicon || theme.favicon){ %>
-    <link rel="shortcut icon" type="image/ico" href="<%= config.favicon || theme.favicon %>"/> 
+    <link rel="shortcut icon" type="image/ico" href="<%= config.favicon || theme.favicon %>"/>
   <% } else { %>
     <%- favicon_tag('css/images/logo.png') %>
   <% } %>
@@ -25,6 +25,3 @@
   <%- js(['js/qrious', 'js/gitment']) %>
   <%- partial('_third-party/mathjax') %>
 </head>
-<div class="wechat-share">
-  <img src="/css/images/logo.png" />
-</div>
