@@ -1,0 +1,59 @@
+author: spox
+description: welcome to the world of tomorrow
+keyword: spox, programming
+favicon: /favicon.ico
+
+excerpt_link: Read more
+
+menu:
+ Home: /
+ Tags: /tags/
+ Archives: /archives/
+ Projects: /project/
+ About: /about/
+
+# highlight
+highlight:
+  tomorrow
+
+# catalog
+catalog: true
+
+# donate
+donate: false
+
+# qrcode
+qrcode: false
+
+# comment
+# you can set gitment or uyan
+
+# comment: gitment
+
+# gitment config
+gitment_owner: chrisroberts
+gitment_repo: chrisroberts.github.io
+gitment_oauth_id:
+gitment_oauth_secret:
+
+# uyan
+# if you want to use uyan as your blog comment, plz remove/comment out gitment config
+
+baidu_id:
+
+about:
+  banner: /imgs/tower.png
+  avatar: https://avatars2.githubusercontent.com/u/266674?s=460&v=4
+  description: "Build the world you want to live in"
+  weibo_username:
+  twitter_username: _spox
+  github_username: chrisroberts
+  zhihu_username:
+  douban_username:
+  linkedin_username:
+
+# MathJax Support
+mathjax:
+  enable: false
+  per_page: false
+  cdn: //cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML
