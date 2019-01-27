@@ -2,9 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://spox.github.io/tags/index.html</loc>
+    <loc>http://spox.github.io/2019/01/27/2019-01-27-tracing-sparkleformation-templates/</loc>
     
-    <lastmod>2018-10-18T01:59:25.984Z</lastmod>
+    <lastmod>2019-01-27T20:42:21.126Z</lastmod>
     
   </url>
   
@@ -12,6 +12,27 @@
     <loc>http://spox.github.io/project/index.html</loc>
     
     <lastmod>2018-10-18T01:59:25.984Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://spox.github.io/tags/index.html</loc>
+    
+    <lastmod>2018-10-18T01:59:25.984Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://spox.github.io/2012/06/23/2012-06-23-chef-gems-and-embedded-ruby/</loc>
+    
+    <lastmod>2018-10-18T01:59:25.981Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://spox.github.io/2012/12/09/2012-12-09-flocking-chefs/</loc>
+    
+    <lastmod>2018-10-18T01:59:25.981Z</lastmod>
     
   </url>
   
@@ -51,7 +72,7 @@
   </url>
   
   <url>
-    <loc>http://spox.github.io/2012/12/09/2012-12-09-flocking-chefs/</loc>
+    <loc>http://spox.github.io/2012/05/09/2012-05-09-cooking-up-partial-run-lists-with-chef/</loc>
     
     <lastmod>2018-10-18T01:59:25.981Z</lastmod>
     
@@ -80,20 +101,6 @@
   
   <url>
     <loc>http://spox.github.io/about/index.html</loc>
-    
-    <lastmod>2018-10-18T01:59:25.981Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://spox.github.io/2012/06/23/2012-06-23-chef-gems-and-embedded-ruby/</loc>
-    
-    <lastmod>2018-10-18T01:59:25.981Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://spox.github.io/2012/05/09/2012-05-09-cooking-up-partial-run-lists-with-chef/</loc>
     
     <lastmod>2018-10-18T01:59:25.981Z</lastmod>
     

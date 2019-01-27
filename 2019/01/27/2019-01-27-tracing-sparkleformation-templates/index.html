@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+  <meta name="description" content="Building the world I want to live in">
+  <meta name="keyword" content="spox, programming">
+  
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+  
+  <title>
+    
+      Tracing SparkleFormation Templates | spox codes
+    
+  </title>
+  <link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.css" rel="stylesheet">
+  <link href="//cdn.bootcss.com/highlight.js/9.12.0/styles/tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/plugins/gitment.css">
+  <script src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdn.bootcss.com/geopattern/1.2.3/js/geopattern.min.js"></script>
+  <script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+  <script src="/js/qrious.js"></script>
+<script src="/js/gitment.js"></script>
+  
+
+</head>
+
+  <noscript>
+    <style>
+     .app-body { opacity: 1; }
+     .author .head { opacity: 1; }
+     .author .description { opacity: 1; }
+     .author h3 { opacity: 1; }
+     #article-banner h2 { opacity: 1; color: #34495e; text-shadow: 0 0 0 #000; }
+     #article-banner .post-date { opacity: 1; color: #34495e; }
+    </style>
+  </noscript>
+  <body>
+    <header class="header fixed-header">
+  <div class="header-container">
+    <a class="home-link" href="/">
+      <div class="logo"></div>
+      <span>spox codes</span>
+    </a>
+    <ul class="right-list">
+      
+        <li class="list-item">
+          
+            <a href="/" class="item-link">Home</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/tags/" class="item-link">Tags</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/archives/" class="item-link">Archives</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/project/" class="item-link">Projects</a>
+          
+        </li>
+      
+        <li class="list-item">
+          
+            <a href="/about/" class="item-link">About</a>
+          
+        </li>
+      
+    </ul>
+    <div class="menu">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </div>
+    <div class="menu-mask">
+      <ul class="menu-list">
+        
+          <li class="menu-item">
+            
+              <a href="/" class="menu-link">Home</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/tags/" class="menu-link">Tags</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/archives/" class="menu-link">Archives</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/project/" class="menu-link">Projects</a>
+            
+          </li>
+        
+          <li class="menu-item">
+            
+              <a href="/about/" class="menu-link">About</a>
+            
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</header>
+
+    <div id="article-banner">
+  <h2>Tracing SparkleFormation Templates</h2>
+  <p class="post-date">2019-01-27</p>
+  <div class="arrow-down">
+    <a href="javascript:;"></a>
+  </div>
+</div>
+<main class="app-body flex-box">
+  <!-- Article START -->
+  <article class="post-article">
+    <section class="markdown-content"><p>SparkleFormation templates are generally composed of items from multiple
+locations: builtins, local SparklePack, remote SparklePacks, etc. Complex
+templates can be difficult to debug when a user may not have a comprehensive
+understanding of all the underlying SparklePacks.</p>
+<h2 id="Template-Audit-Logs"><a href="#Template-Audit-Logs" class="headerlink" title="Template Audit Logs"></a>Template Audit Logs</h2><p>To help provide template composition information the first thing needed is
+a way to record all the items used to build the template. An AuditLog has
+been introduced into the SparkleFormation library and a new Record is added
+to the AuditLog for every item used to compose the template. With this
+AuditLog in place, it’s easy to unpack and display this information to the
+user visualizing how the template has been composed.</p>
+<h2 id="Tracing-and-sfn"><a href="#Tracing-and-sfn" class="headerlink" title="Tracing and sfn"></a>Tracing and sfn</h2><p>With an AuditLog implementation in place within the SparkleFormation library,
+a new <code>trace</code> command has been added to the sfn CLI which provides a user
+interface for displaying the AuditLog Records. So lets start with a simple
+example utilizing only a single builtin dynamic:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:dynamics_only</span>) <span class="keyword">do</span></span><br><span class="line">  dynamic!(<span class="symbol">:ec2_instance</span>, <span class="symbol">:test</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>Using the <code>trace</code> command from the sfn CLI the underlying composition is provided:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> sfn trace --file dynamics_only</span><br><span class="line">[Sfn]: Trace information:</span><br><span class="line">[Sfn]: -&gt; Template - dynamics_only</span><br><span class="line">[Sfn]:  |  source: /home/spox/workspace/sparkle/sparkleformation/dynamics-only.rb</span><br><span class="line">[Sfn]:  |  caller: template</span><br><span class="line">[Sfn]:  |-&gt; Dynamic - ec2_instance</span><br><span class="line">[Sfn]:  | |  source: builtin</span><br><span class="line">[Sfn]:  | |  caller: /home/spox/workspace/sparkle/sparkleformation/dynamics-only.rb @ 2</span><br></pre></td></tr></table></figure>
+<p>In this simple example information about the source template being processed
+is provided first, followed by the builtin dynamic used and the location in
+the template which invoked the dynamic (line 2). As the output shows even
+in this simple example the composition output also includes indentation which
+provides extra context on where the caller is located.</p>
+<h3 id="Multi-file-template"><a href="#Multi-file-template" class="headerlink" title="Multi-file template"></a>Multi-file template</h3><p>In this example a registry and component item is defined and the template
+is composed of the two items. First, the registry item:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SfnRegistry.register(<span class="symbol">:key_name</span>) <span class="keyword">do</span></span><br><span class="line">  <span class="string">"MyDefaultKey"</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>Next, the component item:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.component(<span class="symbol">:base</span>) <span class="keyword">do</span></span><br><span class="line">  parameters.stack_creator.type <span class="string">"String"</span></span><br><span class="line">  dynamic!(<span class="symbol">:ec2_instance</span>, <span class="symbol">:test</span>).properties <span class="keyword">do</span></span><br><span class="line">    key_name registry!(<span class="symbol">:key_name</span>)</span><br><span class="line">  <span class="keyword">end</span></span><br><span class="line">  outputs.stack_creator.value ref!(<span class="symbol">:stack_creator</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>Finally, the template:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:multi_item</span>).load(<span class="symbol">:base</span>) <span class="keyword">do</span></span><br><span class="line">  dynamic!(<span class="symbol">:ec2_volume</span>, <span class="symbol">:test</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>When the trace is run against this template not only are the different
+items used to compose the template shown, the nested items are also displayed:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[Sfn]: Trace information:</span><br><span class="line">[Sfn]: -&gt; Template - multi_item</span><br><span class="line">[Sfn]:  |  source: /home/spox/workspace/sparkle/sparkleformation/multi_item.rb</span><br><span class="line">[Sfn]:  |  caller: template</span><br><span class="line">[Sfn]:  |-&gt; Component - base</span><br><span class="line">[Sfn]:  | |  source: /home/spox/workspace/sparkle/sparkleformation/components/base.rb</span><br><span class="line">[Sfn]:  | |  caller: template</span><br><span class="line">[Sfn]:  | |-&gt; Dynamic - ec2_instance</span><br><span class="line">[Sfn]:  | | |  source: builtin</span><br><span class="line">[Sfn]:  | | |  caller: /home/spox/workspace/sparkle/sparkleformation/components/base.rb @ 3</span><br><span class="line">[Sfn]:  | |-&gt; Registry - key_name</span><br><span class="line">[Sfn]:  | | |  source: /home/spox/workspace/sparkle/sparkleformation/registry/key_name.rb @ 1</span><br><span class="line">[Sfn]:  | | |  caller: /home/spox/workspace/sparkle/sparkleformation/components/base.rb @ 4</span><br><span class="line">[Sfn]:  |-&gt; Dynamic - ec2_volume</span><br><span class="line">[Sfn]:  | |  source: builtin</span><br><span class="line">[Sfn]:  | |  caller: /home/spox/workspace/sparkle/sparkleformation/multi_item.rb @ 2</span><br></pre></td></tr></table></figure>
+<h3 id="Nested-template"><a href="#Nested-template" class="headerlink" title="Nested template"></a>Nested template</h3><p>The <code>trace</code> command will also properly handle template nesting. Using the
+template from the previous example, a simple template is used for nesting:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SparkleFormation.new(<span class="symbol">:nested</span>) <span class="keyword">do</span></span><br><span class="line">  dynamic!(<span class="symbol">:ec2_instance</span>, <span class="symbol">:test</span>)</span><br><span class="line">  nest!(<span class="symbol">:multi_item</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>Running the trace on the new template displays the builtin dynamic as well as
+the nested template with all items used to generate the nested template. The
+indentation provides context on where the source files for each item is located
+and all the items they provide.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[Sfn]: Trace information:</span><br><span class="line">[Sfn]: -&gt; Template - nested</span><br><span class="line">[Sfn]:  |  source: /home/spox/workspace/sparkle/sparkleformation/nested.rb</span><br><span class="line">[Sfn]:  |  caller: template</span><br><span class="line">[Sfn]:  |-&gt; Dynamic - ec2_instance</span><br><span class="line">[Sfn]:  | |  source: builtin</span><br><span class="line">[Sfn]:  | |  caller: /home/spox/workspace/sparkle/sparkleformation/nested.rb @ 2</span><br><span class="line">[Sfn]:  |-&gt; Template - multi_item</span><br><span class="line">[Sfn]:  | |  source: /home/spox/workspace/sparkle/sparkleformation/multi_item.rb</span><br><span class="line">[Sfn]:  | |  caller: /home/spox/workspace/sparkle/sparkleformation/nested.rb @ 3</span><br><span class="line">[Sfn]:  | |-&gt; Component - base</span><br><span class="line">[Sfn]:  | | |  source: /home/spox/workspace/sparkle/sparkleformation/components/base.rb</span><br><span class="line">[Sfn]:  | | |  caller: template</span><br><span class="line">[Sfn]:  | | |-&gt; Dynamic - ec2_instance</span><br><span class="line">[Sfn]:  | | | |  source: builtin</span><br><span class="line">[Sfn]:  | | | |  caller: /home/spox/workspace/sparkle/sparkleformation/components/base.rb @ 3</span><br><span class="line">[Sfn]:  | | |-&gt; Registry - key_name</span><br><span class="line">[Sfn]:  | | | |  source: /home/spox/workspace/sparkle/sparkleformation/registry/key_name.rb @ 1</span><br><span class="line">[Sfn]:  | | | |  caller: /home/spox/workspace/sparkle/sparkleformation/components/base.rb @ 4</span><br><span class="line">[Sfn]:  | |-&gt; Dynamic - ec2_volume</span><br><span class="line">[Sfn]:  | | |  source: builtin</span><br><span class="line">[Sfn]:  | | |  caller: /home/spox/workspace/sparkle/sparkleformation/multi_item.rb @ 2</span><br></pre></td></tr></table></figure>
+<p>The new trace functionality is available in sfn starting with the 3.1.2
+release.</p>
+</section>
+    <!-- Tags START -->
+    
+      <div class="tags">
+        <span>Tags:</span>
+        
+  <a href="/tags#ruby" >
+    <span class="tag-code">ruby</span>
+  </a>
+
+  <a href="/tags#sparkle_formation" >
+    <span class="tag-code">sparkle_formation</span>
+  </a>
+
+  <a href="/tags#sfn" >
+    <span class="tag-code">sfn</span>
+  </a>
+
+  <a href="/tags#tracing" >
+    <span class="tag-code">tracing</span>
+  </a>
+
+      </div>
+    
+    <!-- Tags END -->
+    <!-- NAV START -->
+    
+  <div class="nav-container">
+    <!-- reverse left and right to put prev and next in a more logic postition -->
+    
+      <a class="nav-left" href="/2016/01/27/2016-01-27-hacking-with-attributestruct/">
+        <span class="nav-arrow">← </span>
+        
+          Building crazy with AttributeStruct
+        
+      </a>
+    
+    
+  </div>
+
+    <!-- NAV END -->
+    
+      <!-- No Comment -->
+    
+  </article>
+  <!-- Article END -->
+  <!-- Catalog START -->
+  
+    <aside class="catalog-container">
+  <div class="toc-main">
+    <strong class="toc-title">Catalog</strong>
+    
+      <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Template-Audit-Logs"><span class="toc-nav-text">Template Audit Logs</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Tracing-and-sfn"><span class="toc-nav-text">Tracing and sfn</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Multi-file-template"><span class="toc-nav-text">Multi-file template</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Nested-template"><span class="toc-nav-text">Nested template</span></a></li></ol></li></ol>
+    
+  </div>
+</aside>
+  
+  <!-- Catalog END -->
+</main>
+
+<script>
+  (function () {
+    var url = 'http://spox.github.io/2019/01/27/2019-01-27-tracing-sparkleformation-templates/';
+    var banner = 'undefined'
+    if (banner !== '' && banner !== 'undefined' && banner !== 'null') {
+      $('#article-banner').css({
+        'background-image': 'url(' + banner + ')'
+      })
+    } else {
+      $('#article-banner').geopattern(url)
+    }
+    $('.header').removeClass('fixed-header')
+
+     // error image
+    $(".markdown-content img").on('error', function() {
+      $(this).attr('src', '/imgs/404.png')
+      $(this).css({
+        'cursor': 'default'
+      })
+    })
+
+    // zoom image
+    $(".markdown-content img").on('click', function() {
+      var src = $(this).attr('src')
+      if (src !== '/imgs/404.png') {
+        var imageW = $(this).width()
+        var imageH = $(this).height()
+
+        var zoom = ($(window).width() * 0.95 / imageW).toFixed(2)
+        zoom = zoom < 1 ? 1 : zoom
+        zoom = zoom > 2 ? 2 : zoom
+        var transY = (($(window).height() - imageH) / 2).toFixed(2)
+
+        $('body').append('<div class="image-view-wrap"><div class="image-view-inner"><img src="'+ src +'" /></div></div>')
+        $('.image-view-wrap').addClass('wrap-active')
+        $('.image-view-wrap img').css({
+          'width': `${imageW}`,
+          'transform': `translate3d(0, ${transY}px, 0) scale3d(${zoom}, ${zoom}, 1)`
+        })
+        $('html').css('overflow', 'hidden')
+
+        $('.image-view-wrap').on('click', function() {
+          $(this).remove()
+          $('html').attr('style', '')
+        })
+      }
+    })
+
+    // qrcode
+    var qr = new QRious({
+      element: document.getElementById('share-qrcode'),
+      value: document.location.href
+    });
+
+    // gitment
+    var gitmentConfig = "chrisroberts";
+    if (gitmentConfig !== 'undefined') {
+      var gitment = new Gitment({
+        id: "Tracing SparkleFormation Templates",
+        owner: "chrisroberts",
+        repo: "chrisroberts.github.io",
+        oauth: {
+          client_id: "null",
+          client_secret: "null"
+        },
+        theme: {
+          render(state, instance) {
+            const container = document.createElement('div')
+            container.lang = "en-US"
+            container.className = 'gitment-container gitment-root-container'
+            container.appendChild(instance.renderHeader(state, instance))
+            container.appendChild(instance.renderEditor(state, instance))
+            container.appendChild(instance.renderComments(state, instance))
+            container.appendChild(instance.renderFooter(state, instance))
+            return container;
+          }
+        }
+      })
+      gitment.render(document.getElementById('comments'))
+    }
+  })();
+</script>
+
+    <div class="scroll-top">
+  <span class="arrow-icon"></span>
+</div>
+    <footer class="app-footer">
+  <p class="copyright">
+    &copy; 2019
+  </p>
+</footer>
+
+<script>
+  function async(u, c) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+</script>
+<script>
+  async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+    FastClick.attach(document.body);
+  })
+</script>
+
+<script>
+  var hasLine = 'true';
+  async("//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js", function(){
+    $('figure pre').each(function(i, block) {
+      var figure = $(this).parents('figure');
+      if (hasLine === 'false') {
+        figure.find('.gutter').hide();
+      }
+      var lang = figure.attr('class').split(' ')[1] || 'code';
+      var codeHtml = $(this).html();
+      var codeTag = document.createElement('code');
+      codeTag.className = lang;
+      codeTag.innerHTML = codeHtml;
+      $(this).attr('class', '').empty().html(codeTag);
+      figure.attr('data-lang', lang.toUpperCase());
+      hljs.highlightBlock(block);
+    });
+  })
+</script>
+<script src="/js/script.js"></script>
+
+  </body>
+</html>
